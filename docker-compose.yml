@@ -6,7 +6,10 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - 'c:/data:/html'
+      - '${DATA_DIR}:/html'
+    networks:
+      - internal-network
+      
   admin-console:
     build: ./adminConsole
     image: admin-console:1.0
@@ -108,8 +111,6 @@ services:
       - internal-network
     build: ./kibana-cfg
     image: kibana-cfg:1.0
-    command: > 
-      bash -c "./config.sh"
     depends_on:
       - kibana
            
