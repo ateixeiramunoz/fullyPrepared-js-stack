@@ -1,6 +1,7 @@
 var express = require('express');
+var plast = require('@jacascript/plas-test')
 var router = express.Router();
-var plast =  require('private_modules/plast');
+
 
 
 /* GET home page. */
