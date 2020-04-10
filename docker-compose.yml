@@ -56,14 +56,16 @@ services:
       - "24224:24224/udp"
 
   elasticsearch:
-    image: elasticsearch
+    build: ./elasticsearch
+    image: elasticsearch:1.0 
     expose:
       - 9200
     ports:
       - "9200:9200"
 
   kibana:
-    image: kibana
+    build: ./kibana
+    image: kibana:1.0 
     links:
       - "elasticsearch"
     ports:
