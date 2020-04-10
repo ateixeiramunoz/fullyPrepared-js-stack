@@ -46,6 +46,7 @@ services:
       
   fluentd:
     build: ./fluentd
+    image: fluentd:1.0
     volumes:
       - ./fluentd/conf:/fluentd/etc
     links:
