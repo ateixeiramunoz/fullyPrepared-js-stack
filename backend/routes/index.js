@@ -1,5 +1,5 @@
 var express = require('express');
-var plast = require('@jacascript/plas-test')
+var plast = require('jacascript/plas-test')
 var router = express.Router();
 
 
