@@ -13,6 +13,7 @@ services:
     logging:
       driver: "fluentd"
       options:
+        fluentd-address: localhost:24224
         tag: adminConsole
     networks:
       - internal-network
@@ -32,7 +33,8 @@ services:
     logging:
       driver: "fluentd"
       options:
-        tag: backend
+        fluentd-address: localhost:24224
+        tag: expressBackend
     deploy:
       replicas: 1
     volumes:
@@ -41,29 +43,31 @@ services:
       - '3000:3000'
     command: > 
       bash -c "npm start --host 0.0.0.0 --port 3000"
+      
   fluentd:
-    build: ./logSystem
-    image: logSystem:1.0
+    build: ./fluentd
     volumes:
-      - ./log:/log
+      - ./fluentd/conf:/fluentd/etc
+    links:
+      - "elasticsearch"
     ports:
       - "24224:24224"
       - "24224:24224/udp"
-    networks:
-      - internal-network
-    deploy:
-      restart_policy:
-           condition: on-failure
-           delay: 20s
-           max_attempts: 3
-           window: 120s
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints: [node.role == manager]
-      update_config:
-        delay: 2s
-      
 
+  elasticsearch:
+    image: elasticsearch
+    expose:
+      - 9200
+    ports:
+      - "9200:9200"
+
+  kibana:
+    image: kibana
+    links:
+      - "elasticsearch"
+    ports:
+      - "5601:5601"
+      
+      
 networks:
   internal-network:
