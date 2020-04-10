@@ -11,10 +11,13 @@ services:
     build: ./adminConsole
     image: admin-console:1.0
     logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:24224
-        tag: adminConsole
+        driver: fluentd
+        options:
+            fluentd-address: localhost:24224
+            fluentd-async-connect: 'true'
+            fluentd-retry-wait: '1s'
+            fluentd-max-retries: '30'
+            tag: adminConsole
     networks:
       - internal-network
     volumes:
@@ -25,16 +28,22 @@ services:
       - '80:4200'
     command: > 
       bash -c "ng serve --host 0.0.0.0 --port 4200"
+    depends_on:
+      - fluentd      
+      
   express:
     networks:
       - internal-network
     build: ./backend
     image: backend:1.0
     logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: localhost:24224
-        tag: expressBackend
+        driver: fluentd
+        options:
+            fluentd-address: localhost:24224
+            fluentd-async-connect: 'true'
+            fluentd-retry-wait: '1s'
+            fluentd-max-retries: '30'
+            tag: backend
     deploy:
       replicas: 1
     volumes:
@@ -43,8 +52,14 @@ services:
       - '3000:3000'
     command: > 
       bash -c "npm start --host 0.0.0.0 --port 3000"
+    depends_on:
+      - fluentd
+      
+      
       
   fluentd:
+    networks:
+      - internal-network
     build: ./fluentd
     image: fluentd:1.0
     volumes:
@@ -52,25 +67,51 @@ services:
     links:
       - "elasticsearch"
     ports:
-      - "24224:24224"
-      - "24224:24224/udp"
+      - 24224:24224
+      #- "24224:24224/udp"
 
   elasticsearch:
+    networks:
+      - internal-network
     build: ./elasticsearch
     image: elasticsearch:1.0 
-    expose:
-      - 9200
     ports:
       - "9200:9200"
-
+    environment:
+      - 'node.name=HEYJUDE'
+      - 'discovery.type=single-node'
+      - 'bootstrap.memory_lock=false'
+      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
+    logging:
+      driver: fluentd
+      options:
+          fluentd-address: localhost:24224
+          fluentd-async-connect: 'true'
+          fluentd-retry-wait: '1s'
+          fluentd-max-retries: '30'
+          tag: elasticsearch
+ 
   kibana:
+    networks:
+      - internal-network
     build: ./kibana
-    image: kibana:1.0 
+    image: kibana:1.0
     links:
       - "elasticsearch"
     ports:
       - "5601:5601"
+    depends_on:
+      - elasticsearch
       
-      
+  kibana-cfg:
+    networks:
+      - internal-network
+    build: ./kibana-cfg
+    image: kibana-cfg:1.0
+    command: > 
+      bash -c "./config.sh"
+    depends_on:
+      - kibana
+           
 networks:
   internal-network:
