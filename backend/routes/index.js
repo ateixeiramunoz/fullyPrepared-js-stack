@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var XMLJSONconverter = require('xml-js');
+var plast =  require('private_modules/plast');
 
 
 /* GET home page. */
@@ -8,7 +8,7 @@ router.post('/GetXMLFromJSON', function(req, res) {
 	res.statusText = 'Converted OK';
 	console.log(req.body);
 	
-	var result = XMLJSONconverter.js2xml(req.body, {compact: true, ignoreComment: true, spaces: 4})
+	var result = plast.js2xml(req.body);
 	console.log(result);
 	return res.status(200).json(result);
 }
