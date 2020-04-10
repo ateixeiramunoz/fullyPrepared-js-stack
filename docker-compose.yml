@@ -10,6 +10,10 @@ services:
   admin-console:
     build: ./adminConsole
     image: admin-console:1.0
+    logging:
+      driver: "fluentd"
+      options:
+        tag: adminConsole
     networks:
       - internal-network
     volumes:
@@ -25,6 +29,10 @@ services:
       - internal-network
     build: ./backend
     image: backend:1.0
+    logging:
+      driver: "fluentd"
+      options:
+        tag: backend
     deploy:
       replicas: 1
     volumes:
@@ -33,6 +41,29 @@ services:
       - '3000:3000'
     command: > 
       bash -c "npm start --host 0.0.0.0 --port 3000"
+  fluentd:
+    build: ./logSystem
+    image: logSystem:1.0
+    volumes:
+      - ./log:/log
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    networks:
+      - internal-network
+    deploy:
+      restart_policy:
+           condition: on-failure
+           delay: 20s
+           max_attempts: 3
+           window: 120s
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+      update_config:
+        delay: 2s
+      
 
 networks:
   internal-network:
