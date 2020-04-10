@@ -1,0 +1,1 @@
+awk -F"$1" -v val="$2" '{ print val }'

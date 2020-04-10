@@ -1,0 +1,38 @@
+version: '3.5'
+services:
+  fileinspector:
+    build: ./FileWebInspector/
+    image: fileinspector:1.0
+    ports:
+      - "8080:8080"
+    volumes:
+      - 'c:/data:/html'
+  admin-console:
+    build: ./adminConsole
+    image: admin-console:1.0
+    networks:
+      - internal-network
+    volumes:
+      - './adminConsole:/usr/src/app'
+    deploy:
+      replicas: 1
+    ports: 
+      - '80:4200'
+    command: > 
+      bash -c "ng serve --host 0.0.0.0 --port 4200"
+  express:
+    networks:
+      - internal-network
+    build: ./backend
+    image: backend:1.0
+    deploy:
+      replicas: 1
+    volumes:
+      - './backend:/usr/src/app' 
+    ports: 
+      - '3000:3000'
+    command: > 
+      bash -c "npm start --host 0.0.0.0 --port 3000"
+
+networks:
+  internal-network:
