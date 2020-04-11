@@ -1,0 +1,37 @@
+# Default Kibana configuration for docker target
+server.name: kibana
+server.host: "0"
+elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+xpack.monitoring.ui.container.elasticsearch.enabled: true
+
+xpack.canvas.enabled: false
+xpack.reporting.enabled: true
+xpack.actions.enabled: false
+xpack.alerting.enabled: false
+xpack.maps.enabled: false
+xpack.security.enabled: false
+xpack.uptime.enabled: false
+xpack.watcher.enabled: true
+xpack.spaces.enabled: true
+xpack.license_management.enabled: false
+xpack.upgrade_assistant.enabled: false
+xpack.index_management.enabled: false
+xpack.apm.enabled: false
+xpack.beats.enabled: false
+xpack.ccr.enabled: false
+xpack.cloud.enabled: false
+xpack.code.enabled: false
+xpack.graph.enabled: false
+xpack.grokdebugger.enabled: false
+xpack.ilm.enabled: false
+xpack.infra.enabled: false
+xpack.logstash.enabled: true
+xpack.ml.enabled: false
+xpack.monitoring.enabled: false
+xpack.remote_clusters.enabled: false
+xpack.rollup.enabled: false
+xpack.searchprofiler.enabled: false
+xpack.siem.enabled: false
+xpack.snapshot_restore.enabled: false
+xpack.tilemap.enabled: false
+xpack.transform.enabled: false

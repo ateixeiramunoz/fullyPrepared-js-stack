@@ -1,6 +1,10 @@
-while [[ "$(curl -s http://127.0.0.1:5601/status)" != "200" ]]; do
-	  echo "Waiting for kibana..."
-	  sleep 1
+
+until $(curl --output /dev/null --silent --head --fail http://kibana:5601/status); do
+    echo "Waiting"
+    sleep 2
 done
 
-curl POST -X --url "http://127.0.0.1:5601/api/kibana/saved_objects/_bulk_get" -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @export.ndjson
+until $(curl -X POST --output /dev/null  http://kibana:5601/api/saved_objects/_import -H "kbn-xsrf: true" --form file=@export.ndjson); do
+    echo "POSTING"
+    sleep 2
+done
