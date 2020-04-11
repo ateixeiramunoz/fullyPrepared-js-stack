@@ -1,0 +1,105 @@
+version: '3.5'
+
+services:
+  fileinspector:
+    env_file: 
+      - DEV.env
+    ports:
+      - "8080:8080"
+    volumes:
+      - 'C:/data:/html'
+    networks:
+      - internal-network
+      
+  admin-console:
+    ports: 
+      - '80:4200'
+    env_file: 
+      - DEV.env
+    volumes:
+      - 'C:/data/adminConsole:/usr/src/app'
+    deploy:
+      replicas: 1
+    command: > 
+      bash -c "ng serve --host 0.0.0.0 --port 4200"
+      
+  express:
+    networks:
+      - internal-network
+    env_file: 
+      - DEV.env
+    deploy:
+      replicas: 1
+    volumes:
+      - './backend:/usr/src/app' 
+    ports: 
+      - '3000:3000'
+    command: > 
+      bash -c "npm start --host 3000 --port 3000"
+      
+      
+  fluentd:
+    networks:
+      - internal-network
+    env_file: 
+      - DEV.env
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    links:
+      - "elasticsearch"
+    ports:
+      - 24224:24224
+    depends_on:
+      - kibana
+      
+  elasticsearch:
+    networks:
+      - internal-network
+    env_file: 
+      - DEV.env
+    ports:
+      - "9200:9200"
+    environment:
+      - 'node.name=HEYJUDE'
+      - 'discovery.type=single-node'
+      - 'bootstrap.memory_lock=single-node'
+      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
+      
+  kibana:
+    networks:
+      - internal-network
+    env_file: 
+      - DEV.env
+    ports:
+      - "5601:5601"
+
+      
+  kibana-cfg:
+    networks:
+      - internal-network
+    env_file: 
+      - DEV.env
+
+  mongo:
+    networks:
+      - internal-network
+    env_file: 
+      - DEV.env
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db 
+
+  mongo-express:
+    networks:
+      - internal-network
+    env_file: 
+      - DEV.env
+    ports:
+      - 8081:8081
+    
+networks:
+  internal-network:
+  
+volumes:
+  mongodata:

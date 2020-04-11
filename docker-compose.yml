@@ -1,196 +1,55 @@
 version: '3.5'
 
-
-
 services:
   fileinspector:
-    build: ./FileWebInspector/
+    build:
+      context: ./FileWebInspector
     image: fileinspector:1.0
-    env_file: 
-      - ${CONFIG_FILE_NAME}
-      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
-    ports:
-      - "8080:8080"
-    volumes:
-      - '${ENV_DATA_DIR}:/html'
-    networks:
-      - internal-network
-    logging:
-      driver: fluentd
-      options:
-          fluentd-address: localhost:24224
-          fluentd-async-connect: 'true'
-          fluentd-retry-wait: '1s'
-          fluentd-max-retries: '30'
-          tag: fileinspector
-      
-  admin-console:
-    build: ./adminConsole
-    image: admin-console:1.0
-    env_file: 
-      - ${CONFIG_FILE_NAME}
-      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
-    logging:
-        driver: fluentd
-        options:
-            fluentd-address: localhost:24224
-            fluentd-async-connect: 'true'
-            fluentd-retry-wait: '1s'
-            fluentd-max-retries: '30'
-            tag: adminConsole
-    networks:
-      - internal-network
-    volumes:
-      - './adminConsole:/usr/src/app'
-    deploy:
-      replicas: 1
-    ports: 
-      - '${FRONTEND_EXTERNAL_HTTP_PORT}:${FRONTEND_INTERNAL_HTTP_PORT}'
-    command: > 
-      bash -c "ng serve --host ${FRONTEND_SERVE_HOST} --port ${FRONTEND_INTERNAL_HTTP_PORT}"
+
+  frontend:
+    build:
+      context: ./frontend
+    image: frontend:1.0
     depends_on:
       - fluentd      
       
   express:
-    networks:
-      - internal-network
-    env_file: 
-      - ${CONFIG_FILE_NAME}
-      - ${EXPRESS_DIR}/${CONFIG_FILE_NAME}
-    build: ./backend
+    build:
+      context: ./backend
     image: backend:1.0
-    logging:
-        driver: fluentd
-        options:
-            fluentd-address: localhost:24224
-            fluentd-async-connect: 'true'
-            fluentd-retry-wait: '1s'
-            fluentd-max-retries: '30'
-            tag: backend
-    deploy:
-      replicas: 1
-    volumes:
-      - './backend:/usr/src/app' 
-    ports: 
-      - '${EXPRESS_PORT}:3000'
-    command: > 
-      bash -c "npm start --host ${EXPRESS_HOST} --port ${EXPRESS_PORT}"
-    depends_on:
-      - fluentd
-      
-      
       
   fluentd:
-    networks:
-      - internal-network
-    env_file: 
-      - ${CONFIG_FILE_NAME}
-      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
-    build: ./fluentd
+    build:
+      context: ./fluentd
     image: fluentd:1.0
-    volumes:
-      - ./fluentd/conf:/fluentd/etc
-    links:
-      - "elasticsearch"
-    ports:
-      - 24224:24224
-      #- "24224:24224/udp"
     depends_on:
       - kibana
       
   elasticsearch:
-    networks:
-      - internal-network
-    env_file: 
-      - ${CONFIG_FILE_NAME}
-      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
-    build: ./elasticsearch
+    build:
+      context: ./elasticsearch
     image: elasticsearch:1.0 
-    ports:
-      - "9200:9200"
-    environment:
-      - 'node.name=${ELASTIC_NODE_NAME}'
-      - 'discovery.type=${ELASTIC_DISCOVERY_TYPE}'
-      - 'bootstrap.memory_lock=${ELASTIC_BOOTSTRAP_MEMORY_LOCK}'
-      - 'ES_JAVA_OPTS=${ELASTIC_ES_JAVA_OPTS}'
-    logging:
-      driver: fluentd
-      options:
-          fluentd-address: localhost:24224
-          fluentd-async-connect: 'true'
-          fluentd-retry-wait: '1s'
-          fluentd-max-retries: '30'
-          tag: elasticsearch
-      
       
   kibana:
-    networks:
-      - internal-network
-    env_file: 
-      - ${CONFIG_FILE_NAME}
-      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
-    build: ./kibana
+    build:
+      context: ./kibana
     image: kibana:1.0
-    links:
-      - "elasticsearch"
-    ports:
-      - "${KIBANA_PORT}:${KIBANA_PORT}"
 
-      
   kibana-cfg:
-    networks:
-      - internal-network
-    env_file: 
-      - ${CONFIG_FILE_NAME}
-      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
-    build: ./kibana-cfg
+    build:
+      context: ./kibana-cfg
     image: kibana-cfg:1.0
-    links:
-      - "kibana"
     depends_on: 
       - kibana
 
   mongo:
-    networks:
-      - internal-network
-    env_file: 
-      - ${CONFIG_FILE_NAME}
-      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
-    build: ./mongodb
+    build:
+      context: ./mongodb
     image: mongo:1.0
-    container_name: mongo
     depends_on:
       - fluentd
-    logging:
-      driver: fluentd
-      options:
-          fluentd-address: localhost:${FLUENT_PORT}
-          fluentd-async-connect: 'true'
-          fluentd-retry-wait: '1s'
-          fluentd-max-retries: '30'
-          tag: mongo
-    ports:
-      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}"
-    volumes:
-      - mongodata:/data/db 
-
+    
   mongo-express:
-    networks:
-      - internal-network
-    env_file: 
-      - ${CONFIG_FILE_NAME}
-      - ${EXPRESS_DIR}/${CONFIG_FILE_NAME}
     image: mongo-express
-    ports:
-      - ${MONGO_ADMIN_PORT}:${MONGO_ADMIN_PORT}
     depends_on:
       - mongo
-    links:
-    - "mongo"
-  
-    
-networks:
-  internal-network:
-  
-volumes:
-  mongodata:
