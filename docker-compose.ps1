@@ -1,0 +1,1 @@
+docker-compose --file docker-compose.yml --env-file dev.env build --force-rm --pull --q --parallel

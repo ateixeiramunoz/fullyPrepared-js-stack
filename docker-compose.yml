@@ -1,12 +1,18 @@
 version: '3.5'
+
+
+
 services:
   fileinspector:
     build: ./FileWebInspector/
     image: fileinspector:1.0
+    env_file: 
+      - ${CONFIG_FILE_NAME}
+      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
     ports:
       - "8080:8080"
     volumes:
-      - '${DEV_DATA_DIR}:/html'
+      - '${ENV_DATA_DIR}:/html'
     networks:
       - internal-network
     logging:
@@ -21,6 +27,9 @@ services:
   admin-console:
     build: ./adminConsole
     image: admin-console:1.0
+    env_file: 
+      - ${CONFIG_FILE_NAME}
+      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
     logging:
         driver: fluentd
         options:
@@ -36,15 +45,18 @@ services:
     deploy:
       replicas: 1
     ports: 
-      - '80:4200'
+      - '${FRONTEND_EXTERNAL_HTTP_PORT}:${FRONTEND_INTERNAL_HTTP_PORT}'
     command: > 
-      bash -c "ng serve --host 0.0.0.0 --port 4200"
+      bash -c "ng serve --host ${FRONTEND_SERVE_HOST} --port ${FRONTEND_INTERNAL_HTTP_PORT}"
     depends_on:
       - fluentd      
       
   express:
     networks:
       - internal-network
+    env_file: 
+      - ${CONFIG_FILE_NAME}
+      - ${EXPRESS_DIR}/${CONFIG_FILE_NAME}
     build: ./backend
     image: backend:1.0
     logging:
@@ -60,9 +72,9 @@ services:
     volumes:
       - './backend:/usr/src/app' 
     ports: 
-      - '3000:3000'
+      - '${EXPRESS_PORT}:3000'
     command: > 
-      bash -c "npm start --host 0.0.0.0 --port 3000"
+      bash -c "npm start --host ${EXPRESS_HOST} --port ${EXPRESS_PORT}"
     depends_on:
       - fluentd
       
@@ -71,6 +83,9 @@ services:
   fluentd:
     networks:
       - internal-network
+    env_file: 
+      - ${CONFIG_FILE_NAME}
+      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
     build: ./fluentd
     image: fluentd:1.0
     volumes:
@@ -86,15 +101,18 @@ services:
   elasticsearch:
     networks:
       - internal-network
+    env_file: 
+      - ${CONFIG_FILE_NAME}
+      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
     build: ./elasticsearch
     image: elasticsearch:1.0 
     ports:
       - "9200:9200"
     environment:
-      - 'node.name=HEYJUDE'
-      - 'discovery.type=single-node'
-      - 'bootstrap.memory_lock=false'
-      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
+      - 'node.name=${ELASTIC_NODE_NAME}'
+      - 'discovery.type=${ELASTIC_DISCOVERY_TYPE}'
+      - 'bootstrap.memory_lock=${ELASTIC_BOOTSTRAP_MEMORY_LOCK}'
+      - 'ES_JAVA_OPTS=${ELASTIC_ES_JAVA_OPTS}'
     logging:
       driver: fluentd
       options:
@@ -108,17 +126,23 @@ services:
   kibana:
     networks:
       - internal-network
+    env_file: 
+      - ${CONFIG_FILE_NAME}
+      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
     build: ./kibana
     image: kibana:1.0
     links:
       - "elasticsearch"
     ports:
-      - "5601:5601"
+      - "${KIBANA_PORT}:${KIBANA_PORT}"
 
       
   kibana-cfg:
     networks:
       - internal-network
+    env_file: 
+      - ${CONFIG_FILE_NAME}
+      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
     build: ./kibana-cfg
     image: kibana-cfg:1.0
     links:
@@ -129,6 +153,9 @@ services:
   mongo:
     networks:
       - internal-network
+    env_file: 
+      - ${CONFIG_FILE_NAME}
+      - ${FRONTEND_DIR}/${CONFIG_FILE_NAME}
     build: ./mongodb
     image: mongo:1.0
     container_name: mongo
@@ -137,36 +164,31 @@ services:
     logging:
       driver: fluentd
       options:
-          fluentd-address: localhost:24224
+          fluentd-address: localhost:${FLUENT_PORT}
           fluentd-async-connect: 'true'
           fluentd-retry-wait: '1s'
           fluentd-max-retries: '30'
           tag: mongo
     ports:
-      - "27017:27017"
+      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}"
     volumes:
       - mongodata:/data/db 
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      
+
   mongo-express:
     networks:
       - internal-network
+    env_file: 
+      - ${CONFIG_FILE_NAME}
+      - ${EXPRESS_DIR}/${CONFIG_FILE_NAME}
     image: mongo-express
     ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_BASICAUTH_USERNAME: username
-      ME_CONFIG_BASICAUTH_PASSWORD: password
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      - ${MONGO_ADMIN_PORT}:${MONGO_ADMIN_PORT}
     depends_on:
       - mongo
     links:
     - "mongo"
-
+  
+    
 networks:
   internal-network:
   
