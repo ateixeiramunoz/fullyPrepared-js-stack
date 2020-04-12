@@ -19,7 +19,7 @@ services:
     depends_on:
       - elasticsearch
       - fluentd
-      - kibana
+
 
   kibana-cfg:
     build:
