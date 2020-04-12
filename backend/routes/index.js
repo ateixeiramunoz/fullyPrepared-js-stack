@@ -43,21 +43,6 @@ router.post('/DoComplexModif', function(req, res) {
 });
 
 
-/* GET home page. */
-router.post('/GetJSONFromXML', function(req, res) {
-	res.statusText = 'Converted OK';
-	var result = convertJsonToXML(req.body)
-	return res.status(200).json(result);
-});
-
-
-/* GET home page. */
-router.get('/GetJSONFromXML', function(req, res) {
-	res.statusText = 'Converted OK';
-	return res.status(200).json("OK");
-}
-
-);
 
 
 function convertJsonToXML (req) {
