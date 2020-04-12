@@ -4,20 +4,38 @@
 A Complete full-stack solution for working with JS. 
 
 
+## Installation
 
-## Instalación (Castellano)
-
-  
 - Clone the application
 - Enter the directory `cd fullyPrepared-js-stack`
 - Execute `docker swarm init` to ensure you have docker swarm ready.
-- Execute the following: 
 
-    docker-compose --file docker-compose.yml  build --parallel --force-rm
 
-    docker stack deploy -c ./docker-compose.yml -c ./docker-compose-dev.yml -c ./docker-compose-logging-dev.yml -c ./docker-compose-swarm.yml demo
 
-- Wait for a couple of minutes for the system to start
+## Execution
+
+On Windows:
+```
+docker-compose --file docker-compose.yml  build --parallel --force-rm
+
+docker stack deploy -c ./docker-compose.yml -c ./docker-compose-dev-WINDOWS.yml -c ./docker-compose-logging-dev.yml -c ./docker-compose-swarm.yml demo
+```
+
+On Linux:
+```
+docker-compose --file ./docker-compose.yml  build --force-rm
+
+docker stack deploy -c ./docker-compose.yml -c ./docker-compose-dev-LINUX.yml -c ./docker-compose-logging-dev.yml -c ./docker-compose-swarm.yml demo
+```
+
+## STOPPING THE SWARM
+
+
+```
+docker stack rm demo
+```
+
+
 
 
 ## AVALIABLE URLS
