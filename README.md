@@ -15,7 +15,7 @@ A Complete full-stack solution for working with JS.
 
     docker-compose --file docker-compose.yml  build --parallel --force-rm
 
-    docker stack deploy -c ./docker-compose.yml -c ./docker-compose-dev.yml -c ./docker-compose-logging.yml -c docker-compose-swarm.yml demo
+    docker stack deploy -c ./docker-compose.yml -c ./docker-compose-dev.yml -c ./docker-compose-logging-dev.yml -c ./docker-compose-swarm.yml demo
 
 - Wait for a couple of minutes for the system to start
 
