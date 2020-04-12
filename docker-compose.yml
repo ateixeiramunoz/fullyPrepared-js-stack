@@ -2,15 +2,18 @@ version: '3.5'
 
 services:
  
-  fluentd:
-    build:
-      context: ./fluentd
-    image: fluentd:1.0
-      
   elasticsearch:
     build:
       context: ./elasticsearch
     image: elasticsearch:1.0 
+
+  fluentd:
+    build:
+      context: ./fluentd
+    image: fluentd:1.0
+    links: elasticsearch
+    depends_on:
+      - elasticsearch
       
   kibana:
     build:
