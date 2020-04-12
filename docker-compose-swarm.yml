@@ -5,7 +5,7 @@ services:
   frontend:
     deploy:
       replicas: 1
-      
+
   elasticsearch:
     deploy:
       replicas: 1

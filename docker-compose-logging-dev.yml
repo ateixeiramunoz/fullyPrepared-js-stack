@@ -1,6 +1,7 @@
 version: '3.5'
 
 services:
+
   fileinspector:
     logging:
       driver: fluentd
@@ -11,7 +12,7 @@ services:
           fluentd-max-retries: '30'
           tag: fileinspector
 
-  admin-console:
+  frontend:
     logging:
         driver: fluentd
         options:
@@ -19,9 +20,9 @@ services:
             fluentd-async-connect: 'true'
             fluentd-retry-wait: '1s'
             fluentd-max-retries: '30'
-            tag: adminConsole
+            tag: frontend
       
-  express:
+  backend:
     logging:
         driver: fluentd
         options:
@@ -32,16 +33,15 @@ services:
             tag: backend
       
       
-  elasticsearch:
-    logging:
-      driver: fluentd
-      options:
-          fluentd-address: localhost:24224
-          fluentd-async-connect: 'true'
-          fluentd-retry-wait: '1s'
-          fluentd-max-retries: '30'
-          tag: elasticsearch
-      
+#  elasticsearch:
+#    logging:
+#      driver: fluentd
+#      options:
+#          fluentd-address: localhost:24224
+#          fluentd-async-connect: 'true'
+#          fluentd-retry-wait: '1s'
+#          fluentd-max-retries: '30'
+#          tag: elasticsearch
 
   mongo:
     logging:
@@ -51,9 +51,9 @@ services:
           fluentd-async-connect: 'true'
           fluentd-retry-wait: '1s'
           fluentd-max-retries: '30'
-          tag: mongo
+          tag: mongoDB
     
-  mongo-express:
+  mongo-admin:
     logging:
       driver: fluentd
       options:
@@ -61,6 +61,6 @@ services:
           fluentd-async-connect: 'true'
           fluentd-retry-wait: '1s'
           fluentd-max-retries: '30'
-          tag: mongo-express
+          tag: mongo-admin
   
     

@@ -1,29 +1,11 @@
 version: '3.5'
 
 services:
-  fileinspector:
-    build:
-      context: ./FileWebInspector
-    image: fileinspector:1.0
-
-  frontend:
-    build:
-      context: ./frontend
-    image: frontend:1.0
-    depends_on:
-      - fluentd      
-      
-  express:
-    build:
-      context: ./backend
-    image: backend:1.0
-      
+ 
   fluentd:
     build:
       context: ./fluentd
     image: fluentd:1.0
-    depends_on:
-      - kibana
       
   elasticsearch:
     build:
@@ -34,22 +16,71 @@ services:
     build:
       context: ./kibana
     image: kibana:1.0
+    depends_on:
+      - elasticsearch
+      - fluentd
+      - kibana
 
   kibana-cfg:
     build:
       context: ./kibana-cfg
     image: kibana-cfg:1.0
-    depends_on: 
+    links: 
+      - kibana
+    depends_on:
+      - elasticsearch
+      - fluentd
       - kibana
 
   mongo:
     build:
       context: ./mongodb
     image: mongo:1.0
+    volumes:
+      - mongodata:/data/db
     depends_on:
+      - elasticsearch
       - fluentd
-    
-  mongo-express:
+      - kibana
+
+
+  mongo-admin:
     image: mongo-express
     depends_on:
       - mongo
+
+  backend:
+    build:
+      context: ./backend
+    image: backend:1.0
+    depends_on:
+      - elasticsearch
+      - fluentd
+      - kibana
+      - mongo
+
+  frontend:
+    build:
+      context: ./frontend
+    image: frontend:1.0
+    depends_on:
+      - elasticsearch
+      - fluentd
+      - kibana
+      - backend
+
+  fileinspector:
+    build:
+      context: ./FileWebInspector
+    image: fileinspector:1.0
+
+      
+      
+
+
+networks:
+  internal-network:
+  
+volumes:
+  mongodata:
+ 

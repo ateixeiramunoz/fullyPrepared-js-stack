@@ -12,6 +12,8 @@ services:
       - internal-network
       
   frontend:
+    networks:
+      - internal-network
     ports: 
       - '80:4200'
     env_file: 
@@ -19,7 +21,7 @@ services:
 ##    volumes:
 ##      - './frontend:/usr/src/app'
     command: > 
-      bash -c "npm install && ng serve --host 0.0.0.0 --port 4200"
+      bash -c "ng serve --host 0.0.0.0 --port 4200"
       
   express:
     networks:
@@ -31,8 +33,7 @@ services:
     ports: 
       - '3000:3000'
     command: > 
-      bash -c "npm install && npm start --host 3000 --port 3000"
-      
+      bash -c "npm start --host 3000 --port 3000"
       
   fluentd:
     networks:
@@ -45,8 +46,6 @@ services:
       - "elasticsearch"
     ports:
       - 24224:24224
-    depends_on:
-      - kibana
       
   elasticsearch:
     networks:
@@ -56,9 +55,9 @@ services:
     ports:
       - "9200:9200"
     environment:
-      - node.name=elasticsearch01
+      - node.name=es01
       - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=
+      - discovery.seed_hosts=es01
       - cluster.initial_master_nodes=es01
       - bootstrap.memory_lock=false
       - "ES_JAVA_OPTS=-Xms2048m -Xmx2048m"
@@ -74,14 +73,15 @@ services:
       - DEV.env
     ports:
       - "5601:5601"
-
       
   kibana-cfg:
     networks:
       - internal-network
     env_file: 
       - DEV.env
-
+    depends_on:
+      - kibana
+      
   mongo:
     networks:
       - internal-network
@@ -89,9 +89,8 @@ services:
       - DEV.env
     ports:
       - "27017:27017"
-    volumes:
-      - mongodata:/data/db 
-
+      
+      
   mongo-express:
     networks:
       - internal-network
@@ -99,14 +98,6 @@ services:
       - DEV.env
     ports:
       - 8081:8081
-    
-networks:
-  internal-network:
-  
-volumes:
-  mongodata:
-    driver: local
-    driver_opts:
-      type: local
-      device: C:/mongodata
-      o: bind
+    depends_on:
+      - mongo   
+      
