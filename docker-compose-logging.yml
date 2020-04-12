@@ -20,7 +20,7 @@ services:
             fluentd-async-connect: 'true'
             fluentd-retry-wait: '1s'
             fluentd-max-retries: '30'
-            tag: adminConsole
+            tag: frontend
       
   backend:
     logging:
@@ -62,6 +62,6 @@ services:
           fluentd-async-connect: 'true'
           fluentd-retry-wait: '1s'
           fluentd-max-retries: '30'
-          tag: mongo-express
+          tag: mongo-admin
   
     

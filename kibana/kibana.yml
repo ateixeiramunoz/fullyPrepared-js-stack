@@ -5,7 +5,7 @@ elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 xpack.monitoring.ui.container.elasticsearch.enabled: true
 
 xpack.canvas.enabled: false
-xpack.reporting.enabled: true
+xpack.reporting.enabled: false
 xpack.actions.enabled: false
 xpack.alerting.enabled: false
 xpack.maps.enabled: false
@@ -27,7 +27,7 @@ xpack.ilm.enabled: false
 xpack.infra.enabled: false
 xpack.logstash.enabled: true
 xpack.ml.enabled: false
-xpack.monitoring.enabled: false
+xpack.monitoring.enabled: true 
 xpack.remote_clusters.enabled: false
 xpack.rollup.enabled: false
 xpack.searchprofiler.enabled: false

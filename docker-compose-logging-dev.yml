@@ -6,7 +6,7 @@ services:
     logging:
       driver: fluentd
       options:
-          fluentd-address: localhost:24224
+          fluentd-address: fluentd:24224
           fluentd-async-connect: 'true'
           fluentd-retry-wait: '1s'
           fluentd-max-retries: '30'
@@ -16,7 +16,7 @@ services:
     logging:
         driver: fluentd
         options:
-            fluentd-address: localhost:24224
+            fluentd-address: fluentd:24224
             fluentd-async-connect: 'true'
             fluentd-retry-wait: '1s'
             fluentd-max-retries: '30'
@@ -26,38 +26,39 @@ services:
     logging:
         driver: fluentd
         options:
-            fluentd-address: localhost:24224
+            fluentd-address: fluentd:24224
             fluentd-async-connect: 'true'
             fluentd-retry-wait: '1s'
             fluentd-max-retries: '30'
             tag: backend
       
       
-#  elasticsearch:
-#    logging:
-#      driver: fluentd
-#      options:
-#          fluentd-address: localhost:24224
-#          fluentd-async-connect: 'true'
-#          fluentd-retry-wait: '1s'
-#          fluentd-max-retries: '30'
-#          tag: elasticsearch
+  elasticsearch:
+    logging:
+      driver: fluentd
+      options:
+          fluentd-address: fluentd:24224
+          fluentd-async-connect: 'true'
+          fluentd-retry-wait: '1s'
+          fluentd-max-retries: '30'
+          tag: elasticsearch
+      
 
   mongo:
     logging:
       driver: fluentd
       options:
-          fluentd-address: localhost:24224
+          fluentd-address: fluentd:24224
           fluentd-async-connect: 'true'
           fluentd-retry-wait: '1s'
           fluentd-max-retries: '30'
-          tag: mongoDB
+          tag: mongo
     
   mongo-admin:
     logging:
       driver: fluentd
       options:
-          fluentd-address: localhost:24224
+          fluentd-address: fluentd:24224
           fluentd-async-connect: 'true'
           fluentd-retry-wait: '1s'
           fluentd-max-retries: '30'
