@@ -12,7 +12,7 @@ services:
       context: ./fluentd
     image: fluentd:1.0
     links:
-      -elasticsearch
+      - elasticsearch
     depends_on:
       - elasticsearch
       
