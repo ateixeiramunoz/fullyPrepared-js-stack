@@ -22,7 +22,7 @@ services:
             fluentd-max-retries: '30'
             tag: adminConsole
       
-  express:
+  backend:
     logging:
         driver: fluentd
         options:
@@ -54,7 +54,7 @@ services:
           fluentd-max-retries: '30'
           tag: mongo
     
-  mongo-express:
+  mongo-admin:
     logging:
       driver: fluentd
       options:
