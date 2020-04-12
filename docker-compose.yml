@@ -36,8 +36,6 @@ services:
     build:
       context: ./mongodb
     image: mongo:1.0
-    volumes:
-      - mongodata:/data/db
     depends_on:
       - elasticsearch
       - fluentd

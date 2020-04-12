@@ -85,6 +85,8 @@ services:
   mongo:
     networks:
       - internal-network
+    volumes:
+      - mongodata:/data/db
     env_file: 
       - DEV.env
     ports:
