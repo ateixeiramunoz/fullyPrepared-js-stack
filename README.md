@@ -23,7 +23,7 @@ docker stack deploy -c ./docker-compose.yml -c ./docker-compose-dev-WINDOWS.yml 
 
 On Linux:
 ```
-docker-compose --file ./docker-compose.yml  build --force-rm
+docker-compose --file docker-compose.yml  build --force-rm
 
 docker stack deploy -c ./docker-compose.yml -c ./docker-compose-dev-LINUX.yml -c ./docker-compose-logging-dev.yml -c ./docker-compose-swarm.yml demo
 ```
