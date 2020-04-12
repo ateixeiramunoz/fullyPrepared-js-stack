@@ -1,5 +1,4 @@
 var express = require('express');
-var plast = require('@jacascript/plas-test')
 var router = express.Router();
 
 
@@ -9,7 +8,7 @@ router.post('/GetXMLFromJSON', function(req, res) {
 	res.statusText = 'Converted OK';
 	console.log(req.body);
 	
-	var result = plast.js2xml(req.body);
+	var result = "OK";
 	console.log(result);
 	return res.status(200).json(result);
 }
