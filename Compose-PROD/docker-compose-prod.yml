@@ -17,7 +17,7 @@ services:
     env_file: 
       - DEV.env
     volumes:
-      - 'C:/data/adminConsole:/usr/src/app'
+      - 'C:/data/frontend:/usr/src/app'
     deploy:
       replicas: 1
     command: > 
