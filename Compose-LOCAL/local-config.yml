@@ -27,7 +27,7 @@ services:
     networks:
       - internal-network
     volumes:
-      - ../mongodata:/data/db
+      - mongodata:/data/db
     env_file: 
       - LOCAL.env
     ports:
@@ -44,3 +44,7 @@ services:
 
 networks:
   internal-network:
+  
+volumes:
+  mongodata:
+ 
