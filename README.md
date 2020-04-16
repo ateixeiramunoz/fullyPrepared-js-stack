@@ -12,58 +12,59 @@ A Complete full-stack solution for working with JS.
 
 
 
-## Execution
+## LOCAL Execution for development
+
+> The deploy process will ask you to share some directories inside the project. Accept them for a proper work.
 
 On Windows:
 ```
-docker-compose --file docker-compose.yml  build --parallel --force-rm
+docker-compose --file .\Compose-LOCAL\docker-compose-local.yml build --force-rm
 
-docker stack deploy -c ./docker-compose.yml -c ./docker-compose-dev-WINDOWS.yml -c ./docker-compose-logging-dev.yml -c ./docker-compose-swarm.yml demo
+docker stack deploy -c  .\Compose-LOCAL\docker-compose-local.yml -c .\Compose-LOCAL\local-config.yml demo
 ```
 
 On Linux:
 ```
-docker-compose --file docker-compose.yml  build --force-rm
+docker-compose --file ./Compose-LOCAL/docker-compose-local.yml  build --force-rm
 
-docker stack deploy -c ./docker-compose.yml -c ./docker-compose-dev-LINUX.yml -c ./docker-compose-logging-dev.yml -c ./docker-compose-swarm.yml demo
+docker stack deploy -c ./Compose-LOCAL\docker-compose-local.yml -c ./Compose-LOCAL\local-config.yml demo
 ```
 
-## STOPPING THE SWARM
 
+## AVALIABLE URLS UNDER DEVELOPMENT
+
+Check all the URLs available after deploying your first dev copy
+
+- Frontend -> http://127.0.0.1:4200
+- Backend -> http://127.0.0.1:3000
+- Database Admin -> http://127.0.0.1:8081 (admin/password)
+
+
+> The Frontend directory auto-updates changes from your local and updates the running app-
+> The backend auto update is stil under development
+> The database data will be stored under a `mongodata` dir inside the project.
+ 
+
+## LOGGING UNDER DEVELOPMENT
+
+- You will be able to access container logs under
+
+
+```
+docker ps
+docker logs {CONTAINER_ID}
+```
+
+
+
+
+## STOPPING THE SWARM
 
 ```
 docker stack rm demo
 ```
 
 
+You will also able to tweak some options for the containers in the `Compose-LOCAL/DEV.env` file
 
 
-## AVALIABLE URLS
-
-Check all the URLs available after deploying your first dev copy
-
-- Frontend -> http://127.0.0.1
-- Backend -> http://127.0.0.1:3000
-- File Inspector -> http://127.0.0.1:8080
-- Database Admin -> http://127.0.0.1:8081 (username/password)
-- Kibana (logs) -> http://127.0.0.1:5601
-
-
-You will also able to tweak some options for the containers in the `DEV.env` file
-
-
-- ENV_NAME=DEV
-- CONFIG_FILE_NAME=DEV.env
-- ME_CONFIG_BASICAUTH_USERNAME=username
-- ME_CONFIG_BASICAUTH_PASSWORD=password
-
-- ME_CONFIG_MONGODB_PORT=27017
-- ME_CONFIG_MONGODB_ADMINUSERNAME=root
-- ME_CONFIG_MONGODB_ADMINPASSWORD=example
-- ME_CONFIG_MONGODB_ADMINUSERNAME=root
-- ME_CONFIG_MONGODB_ADMINPASSWORD=example
-
-- ELASTIC_NODE_NAME=HEYJUDE
-- ELASTIC_DISCOVERY_TYPE=single-node
-- ELASTIC_BOOTSTRAP_MEMORY_LOCK=false
-- ELASTIC_ES_JAVA_OPTS=-Xms256m -Xmx256m
