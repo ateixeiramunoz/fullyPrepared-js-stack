@@ -10,4 +10,4 @@ var MaterialSchema = Schema({
     role: String, 
     image: String
 });// Exportamos el modelo para usarlo en otros ficheros
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Material', MaterialSchema);
