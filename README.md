@@ -42,7 +42,7 @@ Check all the URLs available after deploying your first dev copy
 
 > The Frontend directory auto-updates changes from your local and updates the running app-
 > The backend auto update is stil under development
-> The database data will be stored under a `mongodata` dir inside the project.
+> The database data will be stored under a `mongodata` dir inside your Docker Instance.
  
 
 ## LOGGING UNDER DEVELOPMENT
@@ -54,7 +54,6 @@ Check all the URLs available after deploying your first dev copy
 docker ps
 docker logs {CONTAINER_ID}
 ```
-
 
 
 
