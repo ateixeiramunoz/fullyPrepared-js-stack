@@ -1,0 +1,46 @@
+version: '3.5'
+
+services:
+  frontend:
+    networks:
+      - internal-network
+    volumes:
+      - ../frontend/src:/usr/src/app/src
+    ports: 
+      - '4200:4200'
+    env_file: 
+      - LOCAL.env
+    command: >
+      bash -c "ng serve --host 0.0.0.0 --port 4200"
+      
+  backend:
+    networks:
+      - internal-network
+    env_file: 
+      - LOCAL.env
+    ports: 
+      - '3000:3000'
+    command: > 
+      bash -c "npm start --host 0.0.0.0 --port 3000"
+      
+  mongo:
+    networks:
+      - internal-network
+    volumes:
+      - ../mongodata:/data/db
+    env_file: 
+      - LOCAL.env
+    ports:
+      - "27017:27017"
+
+  mongo-admin:
+    networks:
+      - internal-network
+    env_file: 
+      - LOCAL.env
+    ports:
+      - 8081:8081
+
+
+networks:
+  internal-network:
