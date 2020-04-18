@@ -1,28 +1,22 @@
-version: '3.5'
+version: '3.8'
 
 services:
  
   mongo:
     build:
       context: ../mongodb
-    image: mongo:1.0
-    depends_on:
-      - frontend
+    image: mongo:1.0    
 
   mongo-admin:
     image: mongo-express
-    depends_on:
-      - mongo
-      - backend
-
+    
   backend:
     build:
       context: ../backend
     image: backend:1.0
-    depends_on:
-      - mongo
       
   frontend:
     build:
       context: ../frontend
     image: frontend:1.0
+

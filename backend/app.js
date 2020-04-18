@@ -11,6 +11,35 @@ var Mongoose = require("mongoose");
 
 var app = express();
 
+const {
+	  MONGO_USERNAME,
+	  MONGO_PASSWORD,
+	  MONGO_HOSTNAME,
+	  MONGO_PORT,
+	  MONGO_DB
+	  
+	} = process.env;
+
+const options = {
+		  useNewUrlParser: true,
+		  reconnectTries: 10,
+		  reconnectInterval: 500,
+		  connectTimeoutMS: 10000,
+		};
+
+const url = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:${MONGO_PORT}/${MONGO_DB}?authSource=admin`;
+
+
+Mongoose.connect(url, options).then( function() {
+			console.log('MongoDB is connected');
+})
+  .catch( 
+  function(err) {
+  console.log(err);
+});
+		
+		
+		
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -42,8 +71,6 @@ app.use(function(err, req, res, next) {
 });
 
 
-//Connect to Database
-Mongoose.connect("mongodb://localhost/YoVoyXTi");
-
 
 module.exports = app;
+

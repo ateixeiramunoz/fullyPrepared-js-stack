@@ -1,50 +1,65 @@
-version: '3.5'
+version: '3.8'
 
 services:
   frontend:
-    networks:
-      - internal-network
     volumes:
       - ../frontend/src:/usr/src/app/src
-    ports: 
+    ports:
       - '4200:4200'
     env_file: 
-      - LOCAL.env
+      - ../LOCAL.env
     command: >
       bash -c "ng serve --host 0.0.0.0 --port 4200"
+
+
       
   backend:
-    networks:
-      - internal-network
     env_file: 
-      - LOCAL.env
+      - ../LOCAL.env
+    environment:
+      - MONGO_USERNAME=admin
+      - MONGO_PASSWORD=password
+      - MONGO_PORT=27017
+      - MONGO_DB=YoVoyPorTi
+      - MONGO_HOSTNAME=mongo
     ports: 
       - '3000:3000'
     command: > 
-      bash -c "npm start --host 0.0.0.0 --port 3000"
-      
-  mongo:
+      bash -c "/usr/wait-for-it.sh --timeout=0 mongo:27017 && npm start --host 0.0.0.0 --port 3000"
     networks:
-      - internal-network
+      default:
+        aliases:
+          - express     
+
+
+  mongo:
     volumes:
       - mongodata:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
     env_file: 
-      - LOCAL.env
-    ports:
-      - "27017:27017"
-
-  mongo-admin:
+      - ../LOCAL.env
     networks:
-      - internal-network
+      default:
+        aliases:
+          - mongodb
+
+          
+  mongo-admin:
     env_file: 
-      - LOCAL.env
+      - ../LOCAL.env
     ports:
       - 8081:8081
+    networks:
+      default:
+        aliases:
+          - dbAdmin
 
-
-networks:
-  internal-network:
-  
+    
 volumes:
   mongodata:
+  
+networks:
+  default:
  
