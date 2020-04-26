@@ -27,7 +27,7 @@ On Linux:
 ```
 docker-compose --file ./Compose-LOCAL/docker-compose-local.yml  build --force-rm
 
-docker stack deploy -c ./Compose-LOCAL\docker-compose-local.yml -c ./Compose-LOCAL\local-config.yml demo
+docker stack deploy -c ./Compose-LOCAL/docker-compose-local.yml -c ./Compose-LOCAL/local-config.yml demo
 ```
 
 
